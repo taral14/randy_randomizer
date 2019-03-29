@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:randy_randomizer/repositories/roulette_option_repository.dart';
+import 'package:randy_randomizer/repositories/roulette_repository.dart';
 import 'screens/roulette.dart';
 import 'bloc/roulette/roulette.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,11 +17,16 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   RouletteBloc rouletteBloc;
   RouletteOptionRepository optionRepository;
+  RouletteRepository rouletteRepository;
 
   void initState() {
     super.initState();
     optionRepository = RouletteOptionRepository();
-    rouletteBloc = RouletteBloc(optionRepository: optionRepository);
+    rouletteRepository = RouletteRepository();
+    rouletteBloc = RouletteBloc(
+      optionRepository: optionRepository,
+      rouletteRepository: rouletteRepository,
+    );
   }
 
   @override
