@@ -35,7 +35,12 @@ class RouletteScreenState extends State<RouletteScreen>
   initState() {
     super.initState();
     audioPlayer = AudioCache();
-    title$ = PublishSubject<String>();
+    initRouletteBloc();
+    initAnimation();
+    initTitleStream();
+  }
+
+  initRouletteBloc() {
     rouletteBloc = BlocProvider.of<RouletteBloc>(context);
     rouletteSubscription = rouletteBloc.state.listen((state) {
       if (state is LoadedRouletteState) {
@@ -43,6 +48,10 @@ class RouletteScreenState extends State<RouletteScreen>
       }
     });
     rouletteBloc.dispatch(InitRouletteEvent());
+  }
+
+  initTitleStream() {
+    title$ = PublishSubject<String>();
     title$.stream
         .distinct()
         .throttle(new Duration(milliseconds: 80))
@@ -52,7 +61,6 @@ class RouletteScreenState extends State<RouletteScreen>
         .distinct()
         .throttle(new Duration(milliseconds: 80))
         .listen(vibrate);
-    initAnimation();
   }
 
   initAnimation() {
