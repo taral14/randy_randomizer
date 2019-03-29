@@ -3,6 +3,7 @@ import 'dart:async';
 
 class RouletteOptionRepository {
   Future<List<RouletteOption>> getAllOptions() async {
+    await Future.delayed(Duration(seconds: 1));
     return [
       RouletteOption('Конфетки', 'Roulette_1'),
       RouletteOption('Большая булочка с сосиской', 'Roulette_1'),
@@ -11,6 +12,8 @@ class RouletteOptionRepository {
       RouletteOption('Банан', 'Roulette_1'),
       RouletteOption('Арбуз', 'Roulette_1'),
       RouletteOption('Творог', 'Roulette_1'),
+      RouletteOption('Баклажан', 'Roulette_1'),
+      RouletteOption('Картошка', 'Roulette_1'),
     ];
   }
 

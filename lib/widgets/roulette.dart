@@ -52,10 +52,12 @@ class RoulettePainter extends CustomPainter {
     for (int i = 0; i < options.length; i++) {
       RouletteOption option = options[i];
       double radians = 2 * pi / options.length;
+      var textPainter = getTextPainter(option.title);
       paint.color = COLORS[i % COLORS.length];
       canvas.drawArc(rect, 0, radians, true, paint);
       canvas.rotate(radians / 2);
-      drawText(canvas, size.width / 2 - 57, option.title);
+      textPainter.layout(maxWidth: size.width / 2 - 65);
+      textPainter.paint(canvas, Offset(50, -5));
       canvas.rotate(radians / 2);
     }
 
@@ -66,7 +68,7 @@ class RoulettePainter extends CustomPainter {
     canvas.restore();
   }
 
-  void drawText(Canvas canvas, double maxWidth, String text) {
+  TextPainter getTextPainter(String text) {
     final TextStyle textStyle = TextStyle(
       color: Colors.white,
       fontSize: 14.0,
@@ -82,9 +84,7 @@ class RoulettePainter extends CustomPainter {
       ellipsis: '...',
       //size: Size(),
     );
-
-    textPainter.layout(maxWidth: maxWidth);
-    textPainter.paint(canvas, Offset(50, -5));
+    return textPainter;
   }
 
   @override
