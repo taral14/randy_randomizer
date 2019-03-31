@@ -38,18 +38,21 @@ class RoulettePainter extends CustomPainter {
 
     for (int i = 0; i < options.length; i++) {
       RouletteOption option = options[i];
+      paint.shader = RadialGradient(colors: option.colors).createShader(rect);
+
       double radians = 2 * pi / options.length;
       var textPainter = getTextPainter(option.title);
-      paint.color = option.color;
+      //paint.color = option.color;
       canvas.drawArc(rect, 0, radians, true, paint);
       canvas.rotate(radians / 2);
       textPainter.layout(maxWidth: size.width / 2 - 65);
       textPainter.paint(canvas, Offset(50, -5));
       canvas.rotate(radians / 2);
     }
+    paint.shader = null;
 
-    paint.color = Colors.grey[200];
-    canvas.drawCircle(Offset(0, 0), 35, paint);
+    //paint.color = Colors.grey[200];
+    //canvas.drawCircle(Offset(0, 0), 35, paint);
 
     canvas.save();
     canvas.restore();

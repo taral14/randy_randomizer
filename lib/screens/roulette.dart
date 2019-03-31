@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:randy_randomizer/bloc/roulette/roulette.dart';
+import 'package:randy_randomizer/widgets/randy.dart';
 import '../models/roulette_option.dart';
 import '../widgets/roulette.dart';
 import '../widgets/roulette_title.dart';
@@ -31,6 +32,7 @@ class RouletteScreenState extends State<RouletteScreen>
   RouletteBloc rouletteBloc;
   StreamSubscription rouletteSubscription;
   AudioCache audioPlayer;
+  RandyStatus randyStatus;
 
   initState() {
     super.initState();
@@ -54,7 +56,7 @@ class RouletteScreenState extends State<RouletteScreen>
     title$ = PublishSubject<String>();
     title$.stream
         .distinct()
-        .throttle(new Duration(milliseconds: 80))
+        .throttle(new Duration(milliseconds: 100))
         .listen(playSound);
 
     title$.stream
@@ -120,6 +122,9 @@ class RouletteScreenState extends State<RouletteScreen>
     if (status != AnimationStatus.completed) {
       return;
     }
+    setState(() {
+      randyStatus = RandyStatus.finish;
+    });
     audioPlayer.play('tick.mp3');
     Vibrate.feedback(FeedbackType.heavy);
   }
@@ -153,6 +158,9 @@ class RouletteScreenState extends State<RouletteScreen>
   }
 
   spinRoulette() {
+    setState(() {
+      randyStatus = RandyStatus.spinning;
+    });
     spinTween.end = pi * 2 * (9.0 + random.nextDouble());
     spinController.reset();
     spinController.forward();
@@ -165,19 +173,26 @@ class RouletteScreenState extends State<RouletteScreen>
   }
 
   Widget drawRoulette(List<RouletteOption> options) {
-    return GestureDetector(
-      onTap: spinRoulette,
-      child: AnimatedBuilder(
-        animation: spinAnimation,
-        child: Roulette(options: options),
-        builder: (context, child) {
-          return Transform.rotate(
-            child: child,
-            alignment: Alignment.center,
-            angle: spinAnimation.value,
-          );
-        },
-      ),
+    return Stack(
+      children: <Widget>[
+        AnimatedBuilder(
+          animation: spinAnimation,
+          child: Roulette(options: options),
+          builder: (context, child) {
+            return Transform.rotate(
+              child: child,
+              alignment: Alignment.center,
+              angle: spinAnimation.value,
+            );
+          },
+        ),
+        Center(
+          child: Randy(
+            onTap: spinRoulette,
+            status: randyStatus,
+          ),
+        ),
+      ],
     );
   }
 }

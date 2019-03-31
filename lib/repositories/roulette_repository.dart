@@ -3,7 +3,7 @@ import 'dart:async';
 
 class RouletteRepository {
   Future<Roulette> getFirst() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 100));
     return Roulette('Roulette_1', 'Что скушать сегодня утром?');
   }
 }
