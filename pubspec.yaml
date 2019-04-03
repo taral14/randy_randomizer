@@ -53,6 +53,7 @@ flutter:
     - assets/randy_2.png
     - assets/randy_3.png
     - assets/randy_4.png
+    - assets/randy_4_eye.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

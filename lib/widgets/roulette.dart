@@ -2,17 +2,26 @@ import 'package:flutter/material.dart';
 import '../models/roulette_option.dart';
 import 'dart:math';
 
-class Roulette extends StatelessWidget {
+class Roulette extends StatefulWidget {
   final List<RouletteOption> options;
+  final int selected;
 
-  Roulette({@required this.options});
+  Roulette({@required this.options, @required this.selected});
 
+  @override
+  State<Roulette> createState() {
+    return _RouletteState();
+  }
+}
+
+class _RouletteState extends State<Roulette> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(800, 800),
       painter: RoulettePainter(
-        options: options,
+        options: widget.options,
+        selected: widget.selected,
       ),
       child: Container(),
     );
@@ -20,9 +29,10 @@ class Roulette extends StatelessWidget {
 }
 
 class RoulettePainter extends CustomPainter {
-  RoulettePainter({this.options});
+  RoulettePainter({this.options, this.selected});
 
   final List<RouletteOption> options;
+  final int selected;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -38,7 +48,12 @@ class RoulettePainter extends CustomPainter {
 
     for (int i = 0; i < options.length; i++) {
       RouletteOption option = options[i];
-      paint.shader = RadialGradient(colors: option.colors).createShader(rect);
+      if (selected == null || selected == i) {
+        paint.shader = RadialGradient(colors: option.colors).createShader(rect);
+      } else {
+        paint.shader = null;
+        paint.color = Colors.grey[350];
+      }
 
       double radians = 2 * pi / options.length;
       var textPainter = getTextPainter(option.title);

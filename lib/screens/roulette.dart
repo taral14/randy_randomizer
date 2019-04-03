@@ -33,6 +33,7 @@ class RouletteScreenState extends State<RouletteScreen>
   StreamSubscription rouletteSubscription;
   AudioCache audioPlayer;
   RandyStatus randyStatus;
+  int selectedOptionIndex;
 
   initState() {
     super.initState();
@@ -122,8 +123,11 @@ class RouletteScreenState extends State<RouletteScreen>
     if (status != AnimationStatus.completed) {
       return;
     }
+    var value = (spinAnimation.value / pi / 2 - 0.25) % 1;
+    int index = options.length - (value * options.length).floor() - 1;
     setState(() {
       randyStatus = RandyStatus.finish;
+      selectedOptionIndex = index;
     });
     audioPlayer.play('tick.mp3');
     Vibrate.feedback(FeedbackType.heavy);
@@ -152,14 +156,15 @@ class RouletteScreenState extends State<RouletteScreen>
 
   onSpinning() {
     var value = (spinAnimation.value / pi / 2 - 0.25) % 1;
-    int index = (value * options.length).floor();
-    final RouletteOption option = options[options.length - 1 - index];
+    int index = options.length - (value * options.length).floor() - 1;
+    final RouletteOption option = options[index];
     title$.sink.add(option.title);
   }
 
   spinRoulette() {
     setState(() {
       randyStatus = RandyStatus.spinning;
+      selectedOptionIndex = null;
     });
     spinTween.end = pi * 2 * (9.0 + random.nextDouble());
     spinController.reset();
@@ -177,7 +182,7 @@ class RouletteScreenState extends State<RouletteScreen>
       children: <Widget>[
         AnimatedBuilder(
           animation: spinAnimation,
-          child: Roulette(options: options),
+          child: Roulette(options: options, selected: selectedOptionIndex),
           builder: (context, child) {
             return Transform.rotate(
               child: child,
