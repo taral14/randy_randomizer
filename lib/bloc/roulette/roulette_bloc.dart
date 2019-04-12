@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:randy_randomizer/bloc/current/current.dart';
 import '../../repositories/roulette_option_repository.dart';
 import '../../repositories/roulette_repository.dart';
 import './roulette.dart';
@@ -9,10 +10,18 @@ import 'package:flutter/material.dart';
 
 class RouletteBloc extends Bloc<RouletteEvent, RouletteState> {
   RouletteOptionRepository optionRepository;
-  RouletteRepository rouletteRepository;
+  CurrentBloc currentBloc;
 
-  RouletteBloc(
-      {@required this.optionRepository, @required this.rouletteRepository});
+  RouletteBloc({
+    @required this.optionRepository,
+    @required this.currentBloc,
+  }) {
+    currentBloc.state.listen((CurrentState state) {
+      if (state is LoadedCurrentState) {
+        dispatch(ChangeRouletteEvent(state.roulette));
+      }
+    });
+  }
 
   @override
   RouletteState get initialState => InitialRouletteState();
@@ -21,16 +30,9 @@ class RouletteBloc extends Bloc<RouletteEvent, RouletteState> {
   Stream<RouletteState> mapEventToState(
     RouletteEvent event,
   ) async* {
-    if (event is InitRouletteEvent) {
-      yield await mapInitEventToState(event);
-    } else if (event is ChangeRouletteEvent) {
+    if (event is ChangeRouletteEvent) {
       yield await mapChangeEventToState(event);
     }
-  }
-
-  Future<LoadedRouletteState> mapInitEventToState(RouletteEvent event) async {
-    var roulette = await rouletteRepository.getFirst();
-    return await makeStateFromRoulette(roulette);
   }
 
   Future<LoadedRouletteState> mapChangeEventToState(

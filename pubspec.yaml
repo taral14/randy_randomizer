@@ -54,6 +54,8 @@ flutter:
     - assets/randy_3.png
     - assets/randy_4.png
     - assets/randy_4_eye.png
+    - assets/icon_setting.png
+    - assets/icon_edit.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -67,7 +69,13 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+    - family: Helvetica
+      fonts:
+        - asset: fonts/Helvetica-Bold.ttf
+        - asset: fonts/Helvetica-Italic.ttf
+        - asset: fonts/Helvetica-Regular.ttf
+          style: normal
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

@@ -71,7 +71,7 @@ class RandyState extends State<Randy> with TickerProviderStateMixin {
 
   void onPressStart(TapDownDetails details) {
     setState(() {
-      scale = 0.90;
+      scale = 0.95;
     });
   }
 

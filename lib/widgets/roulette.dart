@@ -38,13 +38,16 @@ class RoulettePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.translate(size.width / 2, size.height / 2);
 
-    double radius = size.width / 2 - 10;
-    Rect rect = Rect.fromCircle(center: Offset(0, 0), radius: radius);
+    Rect rect = Rect.fromCircle(
+      center: Offset(0, 0),
+      radius: size.width / 2 - 20,
+    );
     Paint paint = Paint();
     paint.style = PaintingStyle.fill;
 
-    paint.color = Colors.grey[200];
+    paint.color = Color.fromRGBO(81, 80, 80, 0.04);
     canvas.drawCircle(Offset(0, 0), size.width / 2, paint);
+    paint.color = Colors.grey[350];
 
     for (int i = 0; i < options.length; i++) {
       RouletteOption option = options[i];
@@ -56,8 +59,7 @@ class RoulettePainter extends CustomPainter {
       }
 
       double radians = 2 * pi / options.length;
-      var textPainter = getTextPainter(option.title);
-      //paint.color = option.color;
+      var textPainter = makeTextPainter(option.title);
       canvas.drawArc(rect, 0, radians, true, paint);
       canvas.rotate(radians / 2);
       textPainter.layout(maxWidth: size.width / 2 - 65);
@@ -73,10 +75,10 @@ class RoulettePainter extends CustomPainter {
     canvas.restore();
   }
 
-  TextPainter getTextPainter(String text) {
+  TextPainter makeTextPainter(String text) {
     final TextStyle textStyle = TextStyle(
       color: Colors.white,
-      fontSize: 14.0,
+      fontSize: 12.0,
       height: 0.7,
       fontFamily: 'Roboto',
     );

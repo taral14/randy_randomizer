@@ -51,6 +51,19 @@ class RouletteOptionRepository {
       RouletteOption('Творог', 'Roulette_1', colors[6]),
       RouletteOption('Баклажан', 'Roulette_1', colors[7]),
       //RouletteOption('Картошка', 'Roulette_1', colors[6]),
+
+      RouletteOption('Настоящий детектив', 'Roulette_2', colors[0]),
+      RouletteOption('Маньяк', 'Roulette_2', colors[1]),
+      RouletteOption('Клан Сопрано', 'Roulette_2', colors[2]),
+      RouletteOption('Побег из Шоушенка', 'Roulette_2', colors[3]),
+
+      RouletteOption('В кинотеатр', 'Roulette_3', colors[0]),
+      RouletteOption('В Ту-Би', 'Roulette_3', colors[1]),
+      RouletteOption('На набережную', 'Roulette_3', colors[2]),
+
+      RouletteOption('Маме', 'Roulette_4', colors[0]),
+      RouletteOption('Папе', 'Roulette_4', colors[1]),
+      RouletteOption('Бабушке', 'Roulette_4', colors[2]),
     ];
   }
 
