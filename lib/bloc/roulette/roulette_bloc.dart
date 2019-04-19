@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:randy_randomizer/bloc/current/current.dart';
 import '../../repositories/roulette_option_repository.dart';
-import '../../repositories/roulette_repository.dart';
 import './roulette.dart';
 import '../../models/roulette.dart';
 import '../../models/roulette_option.dart';
@@ -32,6 +31,17 @@ class RouletteBloc extends Bloc<RouletteEvent, RouletteState> {
   ) async* {
     if (event is ChangeRouletteEvent) {
       yield await mapChangeEventToState(event);
+    } else if (event is ReloadRouletteEvent) {
+      yield* mapLoadEventToState();
+    }
+  }
+
+  Stream<LoadedRouletteState> mapLoadEventToState() async* {
+    if (currentState is LoadedRouletteState) {
+      var state = currentState as LoadedRouletteState;
+      List<RouletteOption> options =
+          await optionRepository.getRouletteOptions(state.roulette);
+      yield LoadedRouletteState(roulette: state.roulette, options: options);
     }
   }
 

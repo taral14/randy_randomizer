@@ -27,3 +27,11 @@ class RemoveOptionEvent extends UpdateDesisionEvent {
 }
 
 class AddOptionEvent extends UpdateDesisionEvent {}
+
+class UpdateOptionEvent extends UpdateDesisionEvent {
+  final RouletteOption option;
+
+  UpdateOptionEvent({this.option}) : super([option]);
+}
+
+class SaveFormEvent extends UpdateDesisionEvent {}

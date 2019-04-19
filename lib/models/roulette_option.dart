@@ -1,18 +1,21 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 class RouletteOption extends Equatable {
+  int id;
   String title;
-  String rouletteId;
-  List<Color> colors;
+  int rouletteId;
 
-  RouletteOption(this.title, this.rouletteId, this.colors)
-      : super([title, rouletteId, colors]);
+  RouletteOption(this.id, this.title, this.rouletteId)
+      : super([id, title, rouletteId]);
 
-  RadialGradient get gradient {
-    return RadialGradient(
-      colors: colors,
-      stops: [0.0, 1.0],
-    );
+  static RouletteOption fromDb(Map<String, dynamic> data) {
+    return RouletteOption(data['id'], data['title'], data['rouletteId']);
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      "title": title,
+      "rouletteId": rouletteId,
+    };
   }
 }

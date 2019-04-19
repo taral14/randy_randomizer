@@ -38,6 +38,12 @@ class DesisionListScreenState extends State<DesisionListScreen> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add, size: 30),
+        backgroundColor: Color.fromRGBO(104, 59, 221, 1),
+        foregroundColor: Colors.white,
+      ),
     );
   }
 

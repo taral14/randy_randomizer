@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:randy_randomizer/models/roulette.dart';
 import 'package:randy_randomizer/models/roulette_option.dart';
 import 'package:randy_randomizer/repositories/roulette_option_repository.dart';
 import 'package:randy_randomizer/repositories/roulette_repository.dart';
@@ -21,37 +20,73 @@ class UpdateDesisionBloc
     UpdateDesisionEvent event,
   ) async* {
     if (event is AddOptionEvent) {
-      yield await addOption(event);
+      yield* mapAddOptionToState(event);
     } else if (event is RemoveOptionEvent) {
-      yield await removeOption(event);
+      yield* mapRemoveOptionToState(event);
     } else if (event is InitUpdateDesisionEvent) {
-      yield await initDesisionForm(event);
+      yield* mapInitToState(event);
+    } else if (event is UpdateOptionEvent) {
+      yield* mapRenameOptionToState(event);
+    } else if (event is SaveFormEvent) {
+      yield* mapSaveToState(event);
     }
   }
 
-  Future<LoadedUpdateDesisionState> initDesisionForm(
-      InitUpdateDesisionEvent event) async {
+  Stream<LoadedUpdateDesisionState> mapSaveToState(SaveFormEvent event) async* {
+    print('saved');
+    if (currentState is LoadedUpdateDesisionState) {
+      var state = currentState as LoadedUpdateDesisionState;
+      var newOptions = state.options;
+      var newOptionIds = newOptions.map((o) => o.id).toList();
+      var oldOptions =
+          await optionRepository.getRouletteOptions(state.roulette);
+      var delOptions = oldOptions
+          .where((oldOption) => newOptionIds.indexOf(oldOption.id) == -1);
+      for (RouletteOption delOption in delOptions) {
+        await optionRepository.deleteById(delOption.id);
+      }
+      await rouletteRepository.save(state.roulette);
+      for (int i = 0; i < newOptions.length; i++) {
+        await optionRepository.addOptionToRoulette(
+            state.roulette, newOptions[i]);
+      }
+      yield state;
+    }
+  }
+
+  Stream<LoadedUpdateDesisionState> mapRenameOptionToState(
+      UpdateOptionEvent event) async* {
+    var state = currentState as LoadedUpdateDesisionState;
+    final List<RouletteOption> updatedOptions = state.options.map((option) {
+      return option.id == event.option.id ? event.option : option;
+    }).toList();
+    yield LoadedUpdateDesisionState(state.roulette, updatedOptions);
+  }
+
+  Stream<LoadedUpdateDesisionState> mapInitToState(
+      InitUpdateDesisionEvent event) async* {
     var options = await optionRepository.getRouletteOptions(event.roulette);
-    return LoadedUpdateDesisionState(event.roulette, options);
+    yield LoadedUpdateDesisionState(event.roulette, options);
   }
 
-  removeOption(RemoveOptionEvent event) async {
+  Stream<LoadedUpdateDesisionState> mapRemoveOptionToState(
+      RemoveOptionEvent event) async* {
     if (currentState is LoadedUpdateDesisionState) {
       var state = currentState as LoadedUpdateDesisionState;
       List<RouletteOption> options =
-          state.options.map((option) => option).toList();
-      options = options.where((option) => option != event.option).toList();
-      return LoadedUpdateDesisionState(state.roulette, options);
+          state.options.where((option) => option != event.option).toList();
+      yield LoadedUpdateDesisionState(state.roulette, options);
     }
   }
 
-  addOption(AddOptionEvent event) async {
+  Stream<LoadedUpdateDesisionState> mapAddOptionToState(
+      AddOptionEvent event) async* {
     if (currentState is LoadedUpdateDesisionState) {
       var state = currentState as LoadedUpdateDesisionState;
       List<RouletteOption> options =
-          state.options.map((option) => option).toList();
-      options.add(RouletteOption('', state.roulette.id, []));
-      return LoadedUpdateDesisionState(state.roulette, options);
+          state.options.where((option) => option.title != '').toList();
+      options.add(RouletteOption(null, '', state.roulette.id));
+      yield LoadedUpdateDesisionState(state.roulette, options);
     }
   }
 }

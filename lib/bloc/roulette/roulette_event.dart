@@ -12,3 +12,5 @@ class ChangeRouletteEvent extends RouletteEvent {
 
   ChangeRouletteEvent(this.roulette);
 }
+
+class ReloadRouletteEvent extends RouletteEvent {}

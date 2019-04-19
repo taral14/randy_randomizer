@@ -140,6 +140,7 @@ class RouletteScreenState extends State<RouletteScreen>
 
   initRouletteBloc() {
     rouletteBloc = BlocProvider.of<RouletteBloc>(context);
+    rouletteBloc.dispatch(ReloadRouletteEvent());
     rouletteSubscription = rouletteBloc.state.listen((state) {
       if (state is LoadedRouletteState) {
         options = state.options;

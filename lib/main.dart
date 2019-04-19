@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:randy_randomizer/bloc/current/current.dart';
-import 'package:randy_randomizer/models/roulette.dart';
 import 'package:randy_randomizer/repositories/roulette_option_repository.dart';
 import 'package:randy_randomizer/repositories/roulette_repository.dart';
 import 'package:randy_randomizer/screens/desision_list.dart';
@@ -11,8 +10,11 @@ import 'bloc/desision_list/desision_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'screens/setting.dart';
 import 'package:flutter/rendering.dart';
+import './providers/OptionDbProvider.dart';
 
-void main() {
+void main() async {
+  await optionDbProvider.init();
+
   //debugPaintSizeEnabled = true;
   return runApp(App());
 }

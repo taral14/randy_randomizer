@@ -40,33 +40,37 @@ class UpdateDesisionScreenState extends State<UpdateDesisionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          FlatButton(
-            child: Text(
-              'done',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.lightBlue,
+    return BlocBuilder<UpdateDesisionEvent, UpdateDesisionState>(
+      bloc: updateDesisionBloc,
+      builder: (BuildContext context, UpdateDesisionState state) {
+        return Scaffold(
+          appBar: AppBar(
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  'done',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.lightBlue,
+                  ),
+                ),
+                onPressed: saveForm,
               ),
-            ),
-            onPressed: () {},
+            ],
           ),
-        ],
-      ),
-      backgroundColor: Colors.white,
-      body: BlocBuilder<UpdateDesisionEvent, UpdateDesisionState>(
-        bloc: updateDesisionBloc,
-        builder: (BuildContext context, UpdateDesisionState state) {
-          if (state is LoadedUpdateDesisionState) {
-            return buildBody(context, state);
-          } else {
-            return buildLoading(context);
-          }
-        },
-      ),
+          backgroundColor: Colors.white,
+          body: (state is LoadedUpdateDesisionState)
+              ? buildBody(context, state)
+              : buildLoading(context),
+        );
+      },
     );
+  }
+
+  saveForm() {
+    updateDesisionBloc.dispatch(SaveFormEvent());
+    //rouletteBloc.dispatch(ChangeRouletteEvent(widget.roulette));
+    Navigator.pushNamed(context, '/');
   }
 
   Widget buildBody(context, LoadedUpdateDesisionState state) {
@@ -115,6 +119,9 @@ class UpdateDesisionScreenState extends State<UpdateDesisionScreen> {
         hintText: 'Please enter a search term',
       ),
       style: TextStyle(fontSize: 22.0),
+      onChanged: (String value) {
+        roulette.title = value;
+      },
     );
   }
 
@@ -141,8 +148,12 @@ class UpdateDesisionScreenState extends State<UpdateDesisionScreen> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 //helperStyle: ,
-                hintText: 'Please enter a search term',
+                hintText: 'Please enter item name',
               ),
+              onChanged: (String value) {
+                option.title = value;
+                //updateDesisionBloc.dispatch(UpdateOptionEvent(option: option));
+              },
               style: TextStyle(fontSize: 16.0),
             ),
           ),
