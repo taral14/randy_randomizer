@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:randy_randomizer/bloc/current/current.dart';
 import 'package:randy_randomizer/repositories/roulette_option_repository.dart';
 import 'package:randy_randomizer/repositories/roulette_repository.dart';
+import 'package:randy_randomizer/screens/create_desision.dart';
 import 'package:randy_randomizer/screens/desision_list.dart';
 import 'package:randy_randomizer/screens/update_desision.dart';
 import 'screens/roulette.dart';
@@ -10,11 +11,8 @@ import 'bloc/desision_list/desision_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'screens/setting.dart';
 import 'package:flutter/rendering.dart';
-import './providers/OptionDbProvider.dart';
 
 void main() async {
-  await optionDbProvider.init();
-
   //debugPaintSizeEnabled = true;
   return runApp(App());
 }
@@ -29,23 +27,17 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   CurrentBloc currentBloc;
   RouletteBloc rouletteBloc;
-  DesisionListBloc desisionListBloc;
-  RouletteOptionRepository optionRepository;
-  RouletteRepository rouletteRepository;
 
   void initState() {
     super.initState();
-    optionRepository = RouletteOptionRepository();
-    rouletteRepository = RouletteRepository();
+    var optionRepository = RouletteOptionRepository();
+    var rouletteRepository = RouletteRepository();
     currentBloc = CurrentBloc(
       rouletteRepository: rouletteRepository,
     );
     rouletteBloc = RouletteBloc(
       currentBloc: currentBloc,
       optionRepository: optionRepository,
-    );
-    desisionListBloc = DesisionListBloc(
-      rouletteRepository: rouletteRepository,
     );
     currentBloc.dispatch(InitCurrentEvent());
   }
@@ -55,7 +47,6 @@ class AppState extends State<App> {
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<RouletteBloc>(bloc: rouletteBloc),
-        BlocProvider<DesisionListBloc>(bloc: desisionListBloc),
         BlocProvider<CurrentBloc>(bloc: currentBloc),
       ],
       child: MaterialApp(
@@ -83,6 +74,10 @@ class AppState extends State<App> {
               return MaterialPageRoute(
                   builder: (context) =>
                       UpdateDesisionScreen(roulette: settings.arguments));
+              break;
+            case '/create-desision':
+              return MaterialPageRoute(
+                  builder: (context) => CreateDesisionScreen());
               break;
             case '/setting':
               return MaterialPageRoute(builder: (context) => SettingScreen());

@@ -16,14 +16,24 @@ class DesisionListBloc extends Bloc<DesisionListEvent, DesisionListState> {
     DesisionListEvent event,
   ) async* {
     if (event is InitDesisionListEvent) {
-      yield await mapInitEventToState(event);
+      print('DesisionListBloc:InitDesisionListEvent');
+      yield* mapInitEventToState(event);
+    } else if (event is DeleteDesisionEvent) {
+      yield* mapDeleteEventToState(event);
     }
   }
 
-  Future<LoadedDesisionListState> mapInitEventToState(
-      InitDesisionListEvent event) async {
+  Stream<LoadedDesisionListState> mapDeleteEventToState(
+      DeleteDesisionEvent event) async* {
+    await rouletteRepository.deleteById(event.roulette.id);
+    var items = await rouletteRepository.findAll();
+    yield LoadedDesisionListState(items);
+  }
+
+  Stream<LoadedDesisionListState> mapInitEventToState(
+      InitDesisionListEvent event) async* {
     var items = await rouletteRepository.findAll();
 
-    return LoadedDesisionListState(items);
+    yield LoadedDesisionListState(items);
   }
 }

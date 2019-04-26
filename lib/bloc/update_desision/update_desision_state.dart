@@ -10,6 +10,8 @@ abstract class UpdateDesisionState extends Equatable {
 
 class LoadingUpdateDesisionState extends UpdateDesisionState {}
 
+class SuccessSavedDesisionState extends UpdateDesisionState {}
+
 class LoadedUpdateDesisionState extends UpdateDesisionState {
   final Roulette roulette;
 

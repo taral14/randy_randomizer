@@ -32,8 +32,7 @@ class UpdateDesisionBloc
     }
   }
 
-  Stream<LoadedUpdateDesisionState> mapSaveToState(SaveFormEvent event) async* {
-    print('saved');
+  Stream<UpdateDesisionState> mapSaveToState(SaveFormEvent event) async* {
     if (currentState is LoadedUpdateDesisionState) {
       var state = currentState as LoadedUpdateDesisionState;
       var newOptions = state.options;
@@ -50,7 +49,7 @@ class UpdateDesisionBloc
         await optionRepository.addOptionToRoulette(
             state.roulette, newOptions[i]);
       }
-      yield state;
+      yield SuccessSavedDesisionState();
     }
   }
 

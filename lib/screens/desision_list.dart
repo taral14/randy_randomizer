@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:randy_randomizer/bloc/current/current.dart';
 import 'package:randy_randomizer/bloc/desision_list/desision_list.dart';
 import 'package:randy_randomizer/models/roulette.dart';
+import 'package:randy_randomizer/repositories/roulette_repository.dart';
 import 'package:randy_randomizer/widgets/desision_list_view.dart';
 
 class DesisionListScreen extends StatefulWidget {
@@ -13,14 +13,14 @@ class DesisionListScreen extends StatefulWidget {
 }
 
 class DesisionListScreenState extends State<DesisionListScreen> {
-  DesisionListBloc desisisonListBloc;
-  CurrentBloc currentBloc;
+  DesisionListBloc desisionListBloc;
 
   void initState() {
     super.initState();
-    desisisonListBloc = BlocProvider.of<DesisionListBloc>(context);
-    desisisonListBloc.dispatch(InitDesisionListEvent());
-    currentBloc = BlocProvider.of<CurrentBloc>(context);
+    desisionListBloc = DesisionListBloc(
+      rouletteRepository: RouletteRepository(),
+    );
+    desisionListBloc.dispatch(InitDesisionListEvent());
   }
 
   @override
@@ -29,7 +29,7 @@ class DesisionListScreenState extends State<DesisionListScreen> {
       appBar: AppBar(),
       backgroundColor: Colors.white,
       body: BlocBuilder<DesisionListEvent, DesisionListState>(
-        bloc: desisisonListBloc,
+        bloc: desisionListBloc,
         builder: (BuildContext context, DesisionListState state) {
           if (state is LoadedDesisionListState) {
             return buildBody(context, state);
@@ -39,7 +39,9 @@ class DesisionListScreenState extends State<DesisionListScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/create-desision');
+        },
         child: Icon(Icons.add, size: 30),
         backgroundColor: Color.fromRGBO(104, 59, 221, 1),
         foregroundColor: Colors.white,
@@ -69,7 +71,19 @@ class DesisionListScreenState extends State<DesisionListScreen> {
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (context, position) {
-        return DesisisonListView(roulette: items[position]);
+        var desision = items[position];
+        return Dismissible(
+          key: Key(desision.id.toString()),
+          direction: DismissDirection.endToStart,
+          onDismissed: (DismissDirection direction) {
+            desisionListBloc.dispatch(DeleteDesisionEvent(desision));
+            items.removeAt(position);
+          },
+          background: Container(
+            color: Colors.red,
+          ),
+          child: DesisisonListView(roulette: desision),
+        );
       },
     );
   }
